@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>游戏大厅 - 3D赛车竞速</title>
+    <style>
+        /* ===== 全局重置 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+            color: white;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .header {
+            margin-bottom: 50px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .title {
+            font-size: 48px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px 30px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .game-image {
+            width: 100%;
+            height: 240px;
+            background: linear-gradient(135deg, #1a3a2d 0%, #2d5a3d 100%);
+            border-radius: 16px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .game-image::before {
+            content: '🏎️';
+            font-size: 80px;
+            opacity: 0.5;
+        }
+
+        .game-info {
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .game-name {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffd700;
+        }
+
+        .game-desc {
+            font-size: 15px;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 15px;
+        }
+
+        .game-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .feature-item {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            padding: 6px 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+        }
+
+        .start-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+            color: #1a1a2e;
+            border: none;
+            padding: 18px 60px;
+            font-size: 22px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 30px rgba(247, 151, 30, 0.4);
+            text-decoration: none;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 40px rgba(247, 151, 30, 0.6);
+        }
+
+        .start-btn:active {
+            transform: scale(0.95);
+        }
+
+        .controls-info {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            text-align: left;
+        }
+
+        .controls-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #ffd700;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .control-key {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .control-desc {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 26px;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 响应式 */
+        @media (max-width: 640px) {
+            .title { font-size: 36px; }
+            .game-card { padding: 30px 20px; }
+            .game-image { height: 180px; }
+            .game-features { grid-template-columns: 1fr; }
+            .controls-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">游戏大厅</h1>
+            <p class="subtitle">选择游戏开始游玩</p>
+        </div>
+
+        <div class="game-card">
+            <div class="game-image"></div>
+            <div class="game-info">
+                <h2 class="game-name">3D 赛车竞速</h2>
+                <p class="game-desc">
+                    在环形赛道上与 AI 对手一决高下！体验真实的物理碰撞、飘移和竞速乐趣。
+                </p>
+                <div class="game-features">
+                    <div class="feature-item">✨ 3D 视觉效果</div>
+                    <div class="feature-item">🎮 真实物理碰撞</div>
+                    <div class="feature-item">🏁 三圈计时赛</div>
+                    <div class="feature-item">🤖 AI 对手</div>
+                </div>
+            </div>
+            <a href="racing.html" class="start-btn">🚗 开始比赛</a>
+
+            <div class="controls-info">
+                <div class="controls-title">操作说明</div>
+                <div class="controls-grid">
+                    <div><span class="control-key">W / ↑</span></div>
+                    <div class="control-desc">加速前进</div>
+                    <div><span class="control-key">S / ↓</span></div>
+                    <div class="control-desc">倒车减速</div>
+                    <div><span class="control-key">A / ←</span></div>
+                    <div class="control-desc">左转</div>
+                    <div><span class="control-key">D / →</span></div>
+                    <div class="control-desc">右转</div>
+                    <div><span class="control-key">空格</span></div>
+                    <div class="control-desc">手刹飘移</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

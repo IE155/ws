@@ -1,0 +1,437 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+}
+
+body {
+    background: #0a0a0a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+    color: white;
+    overflow: hidden;
+}
+
+#gameContainer {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#canvasContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#canvasContainer canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* ========== 速度模糊效果 ========== */
+#speedBlur {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+    backdrop-filter: blur(0px);
+    transition: backdrop-filter 0.1s ease;
+    mask-image: radial-gradient(circle at 50% 50%, transparent 20%, black 60%);
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 20%, black 60%);
+}
+
+/* ========== HUD ========== */
+#hud {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+    padding: 20px;
+}
+
+#hudTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+#hudTop > div {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    padding: 12px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    min-width: 90px;
+}
+
+.hud-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+#lapValue, #timerValue, #rankValue {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffd700;
+}
+
+#hudBottom {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+#speedometer {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    border-radius: 16px;
+    padding: 15px 25px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+
+#speedValue {
+    font-size: 42px;
+    font-weight: bold;
+    color: #fff;
+    line-height: 1;
+}
+
+#speedUnit {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 8px;
+}
+
+#speedBar {
+    width: 120px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 6px;
+}
+
+#speedFill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #00ff88, #ffd700, #ff4757);
+    border-radius: 3px;
+    transition: width 0.1s ease;
+}
+
+#driftIndicator {
+    background: rgba(255, 100, 0, 0.8);
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-weight: bold;
+    font-size: 16px;
+    animation: pulse 0.5s ease infinite alternate;
+}
+
+@keyframes pulse {
+    from { transform: scale(1); opacity: 0.8; }
+    to { transform: scale(1.05); opacity: 1; }
+}
+
+#lapTimes {
+    position: absolute;
+    top: 80px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    padding: 12px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    min-width: 140px;
+}
+
+.lap-time-item {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+    padding: 3px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.lap-time-item.best {
+    color: #ffd700;
+}
+
+/* ========== 小地图 ========== */
+#minimap {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 150px;
+    height: 150px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+    z-index: 10;
+}
+
+#minimapCanvas {
+    width: 100%;
+    height: 100%;
+}
+
+/* ========== 开始界面 ========== */
+#startScreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(12px);
+    z-index: 20;
+    padding: 20px;
+    animation: fadeIn 0.5s ease;
+}
+
+#startContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+#startScreen h2 {
+    font-size: 42px;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #f7971e, #ffd200);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#gameDesc {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 30px;
+}
+
+#controlsInfo {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 20px 30px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+}
+
+.control-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.control-row:last-child {
+    border-bottom: none;
+}
+
+.control-row span {
+    font-weight: bold;
+    color: #ffd700;
+    min-width: 80px;
+}
+
+#startBtn {
+    background: linear-gradient(135deg, #f7971e, #ffd200);
+    color: #1a1a2e;
+    border: none;
+    padding: 16px 60px;
+    font-size: 22px;
+    font-weight: bold;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 30px rgba(247, 151, 30, 0.4);
+    pointer-events: auto;
+}
+
+#startBtn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 40px rgba(247, 151, 30, 0.6);
+}
+
+#startBtn:active {
+    transform: scale(0.95);
+}
+
+/* ========== 游戏结束界面 ========== */
+#gameOver {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    padding: 40px 50px;
+    border-radius: 20px;
+    text-align: center;
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 60px rgba(255, 215, 0, 0.2);
+    animation: fadeIn 0.5s ease;
+    z-index: 25;
+    pointer-events: auto;
+    min-width: 320px;
+}
+
+#gameOverTitle {
+    font-size: 36px;
+    color: #ffd700;
+    margin-bottom: 20px;
+}
+
+#finalResults {
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 16px;
+}
+
+.result-row span:first-child {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.result-row span:last-child {
+    color: #ffd700;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+#restartBtn {
+    background: linear-gradient(135deg, #f7971e, #ffd200);
+    color: #1a1a2e;
+    border: none;
+    padding: 14px 50px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 30px rgba(247, 151, 30, 0.4);
+    pointer-events: auto;
+}
+
+#restartBtn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 40px rgba(247, 151, 30, 0.6);
+}
+
+#restartBtn:active {
+    transform: scale(0.95);
+}
+
+/* ========== 碰撞提示 ========== */
+#collisionText {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 28px;
+    font-weight: bold;
+    color: #ff4757;
+    text-shadow: 0 0 20px rgba(255, 71, 87, 0.8);
+    z-index: 15;
+    pointer-events: none;
+    animation: collisionPop 0.8s ease forwards;
+}
+
+@keyframes collisionPop {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+    30% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+    100% { opacity: 0; transform: translate(-50%, -40%) scale(1); }
+}
+
+/* ========== 倒计时 ========== */
+#countdown {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 15;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+#countdownNum {
+    font-size: 120px;
+    font-weight: bold;
+    color: #ffd700;
+    text-shadow: 0 0 40px rgba(255, 215, 0, 0.8);
+    animation: countPop 0.9s ease;
+}
+
+@keyframes countPop {
+    0% { transform: scale(2); opacity: 0; }
+    30% { transform: scale(1); opacity: 1; }
+    70% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* ========== 动画 ========== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* ========== 响应式 ========== */
+@media (max-width: 640px) {
+    #startScreen h2 { font-size: 32px; }
+    #gameOverTitle { font-size: 28px; }
+    #countdownNum { font-size: 80px; }
+    #speedValue { font-size: 32px; }
+    #lapValue, #timerValue, #rankValue { font-size: 18px; }
+    #hud { padding: 10px; }
+    #minimap { width: 100px; height: 100px; bottom: 10px; right: 10px; }
+    #speedometer { padding: 10px 15px; }
+    #gameOver { padding: 25px 30px; min-width: 280px; }
+}

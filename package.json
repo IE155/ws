@@ -1,0 +1,21 @@
+{
+  "name": "ws",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo 'No build needed'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IE155/ws.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/IE155/ws/issues"
+  },
+  "homepage": "https://github.com/IE155/ws#readme"
+}
